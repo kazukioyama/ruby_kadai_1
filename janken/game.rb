@@ -1,47 +1,31 @@
-require "./player.rb"
-
 class Game
-    attr_accessor :player1
-    attr_accessor :player2
-    
-    def initialize(player1:, player2:)
-        self.player1 = player1
-        self.player2 = player2
-    end
+  attr_reader :player1
+  attr_reader :player2
 
-    def get_janken
-        if self.player1.hand == 1
-            if self.player2.hand == 1
-                return "引き分けです"
-            end
-            if self.player2.hand == 2
-                return "#{self.player1.name}の勝ちです"
-            end
-            if self.player2.hand == 3
-                return "#{self.player2.name}の勝ちです"
-            end
-        end
-        if self.player1.hand == 2
-            if self.player2.hand == 1
-                return "#{self.player2.name}の勝ちです"
-            end
-            if self.player2.hand == 2
-                return "引き分けです"
-            end
-            if self.player2.hand == 3
-                return "#{self.player1.name}の勝ちです"
-            end
-        end
-        if self.player1.hand == 3
-            if self.player2.hand == 1
-                return "#{self.player1.name}の勝ちです"
-            end
-            if self.player2.hand == 2
-                return "#{self.player2.name}の勝ちです"
-            end
-            if self.player2.hand == 3
-                return "引き分けです"
-            end
-        end
+  BATTLE_RESULT = {
+    draw: 0,  #引き分け
+    loss: 1,  #1人目の負け
+    win: 2  #1人目の勝ち
+  }.freeze
+    
+  def initialize(player1:, player2:)
+    @player1 = player1
+    @player2 = player2
+  end
+
+  def battle
+    return (@player1.hand - @player2.hand + 3) % 3
+  end
+
+  def start
+    if battle() == BATTLE_RESULT[:draw]
+      return "引き分けです"
+    elsif battle() == BATTLE_RESULT[:loss]
+      return "#{@player2.name}の勝ちです"
+    elsif battle() == BATTLE_RESULT[:win]
+      return "#{@player1.name}の勝ちです"
+    else
+      return "エラーがおきました"
     end
+  end
 end
