@@ -1,6 +1,11 @@
 class Game
   attr_reader :player1
   attr_reader :player2
+  HAND = {
+    rock: 0,  #グーの手
+    scissors: 1,  #チョキの手
+    paper: 2  #パーの手
+  }.freeze
 
   BATTLE_RESULT = {
     draw: 0,  #引き分け
@@ -13,16 +18,25 @@ class Game
     @player2 = player2
   end
 
+  def correct_hand?(hand1:, hand2:)
+    return  HAND.values.include?(hand1) && HAND.values.include?(hand2) #0,1,2のいずれかが正しく入力されたか
+  end
+
   def battle
-    return (@player1.hand - @player2.hand + 3) % 3
+    if correct_hand?(hand1: @player1.hand, hand2: @player2.hand)  #0,1,2のいずれかが正しく入力された場合
+      return (@player1.hand - @player2.hand + 3) % 3
+    else
+      puts "正しい値を入力してください"
+    end
   end
 
   def start
-    if battle() == BATTLE_RESULT[:draw]
+    case battle()
+    when BATTLE_RESULT[:draw]
       return "引き分けです"
-    elsif battle() == BATTLE_RESULT[:loss]
+    when BATTLE_RESULT[:loss]
       return "#{@player2.name}の勝ちです"
-    elsif battle() == BATTLE_RESULT[:win]
+    when BATTLE_RESULT[:win]
       return "#{@player1.name}の勝ちです"
     else
       return "エラーがおきました"
